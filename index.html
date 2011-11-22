@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<!-- Always force latest IE rendering engine (even in intranet) & Chrome Frame
+		Remove this if you use the .htaccess -->
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+		<title>index</title>
+		<meta name="description" content="" />
+		<meta name="author" content="andrey" />
+		<!--<meta name="viewport" content="width=device-width; initial-scale=1.0" />-->
+		<!-- Replace favicon.ico & apple-touch-icon.png in the root of your domain and delete these references -->
+		<link rel="shortcut icon" href="/favicon.ico" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+		<script type="text/javascript" src="animate.js"></script>
+		<script type="text/javascript">
+			function ImageCollection(options) {
+				
+				options = options || {};
+				var self = this;
+				var images = {};
+		
+				function __construct() {
+					
+				}
+				
+				self.create = function(name, src) {
+					if(images[name] instanceof Image) {
+						images[name].src = src;
+					} else {
+						images[name] = new Image();
+						images[name].onerror = function() {
+							images[name]._error = true;
+						}
+						images[name].onload = function() {
+							images[name]._load = true;
+						}
+						images[name].src = src;
+					}
+				}
+				
+				self.get = function(name) {
+					if(images[name] instanceof Image) {
+						if(images[name]._error) throw new Error('File load ("'+images[name].src+'") - ERROR');
+						else if(images[name]._load) return images[name];
+						else throw new Error('File load ("'+images[name].src+'") - in process');
+					} else {
+						throw new Error('Image ("'+name+'") - NOT FOUND');
+					}
+				}
+				
+				__construct();
+		
+			}
+		</script>
+		<script>
+			window.onload = function() {
+				window.canvas = new Animate2D().createCanvas('canvas-2d', {width: 890, height: 550}).appendTo(document.body);
+				
+				images = new ImageCollection();
+				images.create('bg', 'images/Scene.png');
+				images.create('duck', 'images/black_duck.png');
+				
+				setTimeout(function() {
+					
+					var bg = canvas.createSprite({image: images.get('bg'), width: 890, height: 550});
+					bg.append(canvas.createSprite({
+						image: images.get('duck'), width: 540, height: 295, 
+						'frame-x': 1, 'frame-y': 0, 'frame-width': 135, 'frame-height': 98
+					}));
+					canvas.rootSprite(bg).draw();
+					
+					
+				}, 5000);
+				
+			}			
+		</script>
+	</head>
+	<body style="background-color: silver;">
+	</body>
+</html>
