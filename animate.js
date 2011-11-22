@@ -30,7 +30,30 @@ function Animate2D(options) {
 		
 	}
 	
-	function _draw() {
+	function _draw(sprites, context, p_width, p_height) {
+		
+		context.save();
+		
+		for(var i=0; i<sprites.length; i++) {
+			
+			var sprite = sprites[i];
+			
+			var width = sprite.style('width') || 0, height = sprite.style('height') || 0;
+			
+			var top = sprite.style('top'), left = sprite.style('left'), right = sprite.style('right'), bottom = sprite.style('bottom');
+			
+			top = (!top && top !== 0)?((bottom || bottom === 0)?(p_height-height-bottom):0):top;
+			left = (!left && left !== 0)?((right || right === 0)?(p_width-width-right):0):left;
+			
+			// frame!!!
+			var frameX = sprite.style('frame-x') || 0, frameY = sprite.style('frame-y') || 0, 
+				frameWidth = sprite.style('frame-width') || width, frameHeight = sprite.style('frame-height') || height;
+			
+			context.drawImage(sprite.draw(), frameX*frameWidth, frameY*frameHeight, frameWidth, frameHeight, left, top, frameWidth, frameHeight);
+			
+		}
+		
+		context.restore();
 		
 	}
 	
@@ -38,7 +61,7 @@ function Animate2D(options) {
 		
 		options = options || {};
 		var self = this;
-		var canvas, context, element;
+		var canvas, context, sprites = [];
 	
 		function __construct() {
 			canvas = document.createElement('canvas');
@@ -71,6 +94,11 @@ function Animate2D(options) {
 		
 		self.draw = function() {
 			
+			_draw(sprites, context, canvas.width, canvas.height);
+			
+			return self;
+			
+			/*
 			if(!element.change()) return self;
 			
 			var top = element.style('top'), left = element.style('left'), right = element.style('right'), bottom = element.style('bottom');
@@ -83,21 +111,25 @@ function Animate2D(options) {
 			context.drawImage(element.draw(), left, top, element.style('width'), element.style('height'));
 			
 			return self;
+			*/
 		}
 		
-		/*
-		self.rootSprite = function(sprite) {
-			if(sprite instanceof __SpriteCanvas2D__) element = sprite; else element = null;
+		self.append = function(sprite, opts) {
+			if(!(sprite instanceof __SpriteCanvas2D__)) return self;
+			sprites.push(sprite);
+			sprite.style(opts);
+			sprites.sort(function(a, b) {
+				return a.style('z-index') - b.style('z-index');
+			});
 			return self;
-		}
-		*/
-		
-		self.append = function() {
-			
 		}
 		
 		self.remove = function() {
-			
+			if(!(sprite instanceof __SpriteCanvas2D__)) return self;
+			for(var i=0; i<sprites.length; i++) {
+				if(sprites[i] == sprite) sprites.splice(i, 0);
+			}
+			return self;
 		}
 		
 		self.__destroy = function() {
@@ -113,7 +145,7 @@ function Animate2D(options) {
 	
 	/*
 	 * image, width, height, frame-x, frame-y, frame-width, frame-height, z-index, top, left, right, bottom, scale-x, scale-y, 
-	 * rotate, opacity, visibility
+	 * rotate, opacity, visibility, translate-x, translate-y
 	 * parent
 	 */
 	function __SpriteCanvas2D__(options) {
@@ -181,6 +213,10 @@ function Animate2D(options) {
 					newStyles['rotate'] = styles['rotate'] = (typeof style[i] == 'number')?parseFloat(style[i]):0;
 				} else if(i == 'opacity') {
 					newStyles['opacity'] = styles['opacity'] = (style[i] > 0 && style[i] < 1)?parseFloat(style[i]):1;
+				} else if(i == 'translate-x') {
+					newStyles['translate-x'] = styles['translate-x'] = (typeof style[i] == 'number')?parseFloat(style[i]):0;
+				} else if(i == 'translate-y') {
+					newStyles['translate-y'] = styles['translate-y'] = (style[i] > 0 && style[i] < 1)?parseFloat(style[i]):1;
 				}
 			}
 		}
@@ -202,6 +238,12 @@ function Animate2D(options) {
 		}
 		
 		self.draw = function() {
+			
+			_draw(children, canvas.getContext(), styles.width, styles.height);
+			
+			return canvas.getCanvas();
+			
+			/*
 			var context = canvas.getContext();
 			if(!change) return canvas.getCanvas();
 			
@@ -224,9 +266,11 @@ function Animate2D(options) {
 			context.restore();
 			
 			return canvas.getCanvas();
+			*/
 		}
 		
 		self.append = function(sprite, opts) {
+			if(!(sprite instanceof __SpriteCanvas2D__)) return self;
 			children.push(sprite);
 			sprite.style(opts);
 			children.sort(function(a, b) {
@@ -238,7 +282,7 @@ function Animate2D(options) {
 		}
 		
 		self.remove = function(sprite) {
-			if(!(sprite instanceof __SpriteCanvas2D__)) return;
+			if(!(sprite instanceof __SpriteCanvas2D__)) return self;
 			for(var i=0; i<children.length; i++) {
 				if(children[i] == sprite) children.splice(i, 0);
 			}
@@ -260,7 +304,7 @@ function Animate2D(options) {
 			return change;
 		}
 		
-		self.parent = function() {
+		self.parent = function(parent) {
 			return parent;
 		}
 		

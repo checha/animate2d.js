@@ -58,17 +58,104 @@
 				window.canvas = new Animate2D().createCanvas('canvas-2d', {width: 890, height: 550}).appendTo(document.body);
 				
 				images = new ImageCollection();
-				images.create('bg', 'images/Scene.png');
-				images.create('duck', 'images/black_duck.png');
+				images.create('bg', 'Scene.png');
+				images.create('duck', 'black_duck.png');
+				images.create('duck2', 'white_duck.png');
+				images.create('bear', 'bear.png');
+				images.create('fox', 'fox.png');
+				images.create('squirrel', 'squirrel.png');
+				images.create('hunter', 'hunter.png');
+				images.create('legs', 'legs.png');
+				images.create('body', 'body.png');
+				images.create('arm', 'arm.png');
+				images.create('head', 'head.png');
+				images.create('hand', 'hand.png');
 				
 				setTimeout(function() {
 					
-					var bg = canvas.createSprite({image: images.get('bg'), width: 890, height: 550});
+					var bg = canvas.createSprite({
+						image: images.get('bg'), width: 890, height: 550, 'z-index':1
+					})
+					
+					canvas.append(bg);
+					
+					// bear
 					bg.append(canvas.createSprite({
-						image: images.get('duck'), width: 540, height: 295, 
-						'frame-x': 1, 'frame-y': 0, 'frame-width': 135, 'frame-height': 98
+						image: images.get('bear'), width: 298, height: 119, 'z-index':2, top: 150, left: 720,
+						'frame-x': 0, 'frame-y': 0, 'frame-width': 298/2, 'frame-height': 119
 					}));
-					canvas.rootSprite(bg).draw();
+					
+					// fox
+					bg.append(canvas.createSprite({
+						image: images.get('fox'), width: 388, height: 132, 'z-index':2, top: 230, left: 120,
+						'frame-x': 0, 'frame-y': 0, 'frame-width': 388/2, 'frame-height': 132
+					}));
+					
+					// squirrel
+					bg.append(canvas.createSprite({
+						image: images.get('squirrel'), width: 176, height: 60, 'z-index':2, top: 240, left: 320,
+						'frame-x': 0, 'frame-y': 0, 'frame-width': 176/2, 'frame-height': 60
+					}));
+					
+					// duck 1
+					canvas.append(canvas.createSprite({
+						image: images.get('duck'), width: 540, height: 295, top: 0, left: 100,
+						'frame-x': 1, 'frame-y': 0, 'frame-width': 135, 'frame-height': 97,
+						'z-index':10
+					}));
+					
+					// duck 2
+					canvas.append(canvas.createSprite({
+						image: images.get('duck2'), width: 540, height: 295, top: 120, left: 200,
+						'frame-x': 2, 'frame-y': 0, 'frame-width': 135, 'frame-height': 97,
+						'z-index':10
+					}));
+					
+					// duck 3
+					canvas.append(canvas.createSprite({
+						image: images.get('duck'), width: 540, height: 295, top: 240, left: 300,
+						'frame-x': 3, 'frame-y': 0, 'frame-width': 135, 'frame-height': 97,
+						'z-index':10
+					}));
+					
+					// hunter 1
+					/*
+					canvas.append(canvas.createSprite({
+						image: images.get('hunter'), width: 1360, height: 1040, top: 330, left: 610,
+						'frame-x': 4, 'frame-y': 1, 'frame-width': 1360/5, 'frame-height': 1040/5,
+						'z-index':5
+					}));
+					*/
+					
+					// hunter 2
+					var hunter2 = canvas.createSprite({
+						width: 272, height: 208, top: 330, left: 610,
+						'z-index':6
+					});
+					
+					hunter2.append(canvas.createSprite({
+						image: images.get('legs'), width: 114, height: 71, bottom: 0, left: 73, 'z-index':1
+					}));
+					
+					hunter2.append(canvas.createSprite({
+						image: images.get('body'), width: 79, height: 61, top: 118, left: 101, 'z-index':3
+					}));
+					
+					hunter2.append(canvas.createSprite({
+						image: images.get('arm'), width: 67, height: 77, top: 56, left: 54, 'z-index':1
+					}));
+					
+					hunter2.append(canvas.createSprite({
+						image: images.get('head'), width: 111, height: 102, top: 32, left: 96, 'z-index':2
+					}));
+					
+					hunter2.append(canvas.createSprite({
+						image: images.get('hand'), width: 168, height: 125, top: 18, left: 0, 'z-index':4
+					}));
+					
+					canvas.append(hunter2);
+					
+					canvas.draw();
 					
 					
 				}, 5000);
