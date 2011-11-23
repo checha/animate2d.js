@@ -138,19 +138,23 @@
 					}));
 					
 					hunter2.append(canvas.createSprite({
-						image: images.get('body'), width: 79, height: 61, top: 118, left: 101, 'z-index':3
+						image: images.get('body'), width: 79, height: 61, top: 118, left: 101, 'z-index':3,
+						rotate: 10
 					}));
 					
 					hunter2.append(canvas.createSprite({
-						image: images.get('arm'), width: 67, height: 77, top: 56, left: 54, 'z-index':1
+						image: images.get('arm'), width: 67, height: 77, top: 56, left: 54, 'z-index':1,
+						rotate: 13, 'origin-x': 160, 'origin-y': 120
 					}));
 					
 					hunter2.append(canvas.createSprite({
-						image: images.get('head'), width: 111, height: 102, top: 32, left: 96, 'z-index':2
+						image: images.get('head'), width: 111, height: 102, top: 32, left: 96, 'z-index':2,
+						rotate: 22, 'origin-x': 55, 'origin-y': 85
 					}));
 					
 					hunter2.append(canvas.createSprite({
-						image: images.get('hand'), width: 168, height: 125, top: 18, left: 0, 'z-index':4
+						image: images.get('hand'), width: 168, height: 125, top: 18, left: 0, 'z-index':4,
+						rotate: 20, 'origin-x': 160, 'origin-y': 120
 					}));
 					
 					canvas.append(hunter2);

@@ -40,16 +40,43 @@ function Animate2D(options) {
 			
 			var width = sprite.style('width') || 0, height = sprite.style('height') || 0;
 			
+			// position
 			var top = sprite.style('top'), left = sprite.style('left'), right = sprite.style('right'), bottom = sprite.style('bottom');
+				top = (!top && top !== 0)?((bottom || bottom === 0)?(p_height-height-bottom):0):top;
+				left = (!left && left !== 0)?((right || right === 0)?(p_width-width-right):0):left;
 			
-			top = (!top && top !== 0)?((bottom || bottom === 0)?(p_height-height-bottom):0):top;
-			left = (!left && left !== 0)?((right || right === 0)?(p_width-width-right):0):left;
-			
-			// frame!!!
+			// frame
 			var frameX = sprite.style('frame-x') || 0, frameY = sprite.style('frame-y') || 0, 
 				frameWidth = sprite.style('frame-width') || width, frameHeight = sprite.style('frame-height') || height;
-			
-			context.drawImage(sprite.draw(), frameX*frameWidth, frameY*frameHeight, frameWidth, frameHeight, left, top, frameWidth, frameHeight);
+				
+			// rotate
+			var rotate = sprite._style('rotate');
+			if(rotate || rotate === 0) {console.log('translate');
+				var originX = sprite.style('origin-x'), originY = sprite.style('origin-y');
+				originX = (!originX && originX !== 0)?width/2:originX;
+				originY = (!originY && originY !== 0)?height/2:originY;
+				
+				console.log('arg: width %o, height %o, originX %o, originY %o', width, height, originX, originY);
+				
+				context.save();
+				
+				// translate
+				context.translate(left+originX, top+originY);
+				// rotate
+				context.rotate(rotate * Math.PI/180);
+				// drawImage
+				context.drawImage(sprite.draw(), frameX*frameWidth, frameY*frameHeight, frameWidth, frameHeight, 
+				0-originX, 0-originY, frameWidth, frameHeight);
+				// rotate
+				//context.rotate(0);
+				// translate
+				context.translate(-left-originX, -top-originY);
+				
+				context.restore();
+				
+			} else {
+				context.drawImage(sprite.draw(), frameX*frameWidth, frameY*frameHeight, frameWidth, frameHeight, left, top, frameWidth, frameHeight);
+			}
 			
 		}
 		
@@ -145,7 +172,7 @@ function Animate2D(options) {
 	
 	/*
 	 * image, width, height, frame-x, frame-y, frame-width, frame-height, z-index, top, left, right, bottom, scale-x, scale-y, 
-	 * rotate, opacity, visibility, translate-x, translate-y
+	 * rotate, opacity, visibility, origin-x, origin-y
 	 * parent
 	 */
 	function __SpriteCanvas2D__(options) {
@@ -176,7 +203,6 @@ function Animate2D(options) {
 				canvas.getContext().drawImage(image, 0, 0, styles.width, styles.height);
 			}
 			
-			newStyles = {};
 		}
 		
 		function setStyle(style) {
@@ -213,10 +239,10 @@ function Animate2D(options) {
 					newStyles['rotate'] = styles['rotate'] = (typeof style[i] == 'number')?parseFloat(style[i]):0;
 				} else if(i == 'opacity') {
 					newStyles['opacity'] = styles['opacity'] = (style[i] > 0 && style[i] < 1)?parseFloat(style[i]):1;
-				} else if(i == 'translate-x') {
-					newStyles['translate-x'] = styles['translate-x'] = (typeof style[i] == 'number')?parseFloat(style[i]):0;
-				} else if(i == 'translate-y') {
-					newStyles['translate-y'] = styles['translate-y'] = (style[i] > 0 && style[i] < 1)?parseFloat(style[i]):1;
+				} else if(i == 'origin-x') {
+					styles['origin-x'] = (typeof style[i] == 'number')?parseFloat(style[i]):0;
+				} else if(i == 'origin-y') {
+					styles['origin-y'] = (typeof style[i] == 'number')?parseFloat(style[i]):0;
 				}
 			}
 		}
@@ -237,9 +263,15 @@ function Animate2D(options) {
 			return self;
 		}
 		
+		self._style = function(name) {
+			return newStyles[name];
+		}
+		
 		self.draw = function() {
 			
 			_draw(children, canvas.getContext(), styles.width, styles.height);
+			
+			newStyles = {};
 			
 			return canvas.getCanvas();
 			
