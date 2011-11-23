@@ -51,12 +51,10 @@ function Animate2D(options) {
 				
 			// rotate
 			var rotate = sprite._style('rotate');
-			if(rotate || rotate === 0) {console.log('translate');
+			if(rotate || rotate === 0) {
 				var originX = sprite.style('origin-x'), originY = sprite.style('origin-y');
 				originX = (!originX && originX !== 0)?width/2:originX;
 				originY = (!originY && originY !== 0)?height/2:originY;
-				
-				console.log('arg: width %o, height %o, originX %o, originY %o', width, height, originX, originY);
 				
 				context.save();
 				
