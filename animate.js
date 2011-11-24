@@ -82,6 +82,7 @@ function Animate2D(options) {
 				} catch(e) {
 					console.error(e);
 				}
+				
 				context.translate(-left-originX, -top-originY);
 				context.restore();
 				
@@ -109,7 +110,7 @@ function Animate2D(options) {
 		
 		options = options || {};
 		var self = this;
-		var canvas, context, sprites = [];
+		var canvas, context, sprites = [];		
 	
 		function __construct() {
 			canvas = document.createElement('canvas');
@@ -334,6 +335,53 @@ function Animate2D(options) {
 			} else {
 				return children[arg];
 			}
+		}
+		
+		// animation
+		self.animation = function(id, opts) {// delay, duration, action, property: {name: value, ...}, direction
+			
+		}
+		
+		self.play = function(id) {
+			
+		}
+		
+		self.stop = function(id) {
+			
+		}
+		
+		self.pause = function(id) {
+			
+		}
+		
+		self.movie = function(name, movie) {// id:count;id:count;...
+			
+		}
+		
+		self.playMovie = function(name) {
+			
+		}
+		
+		self.pauseMovie = function(name) {
+			
+		}
+		
+		self.stopMovie = function(name) {
+			
+		}
+		
+		self.addEventListener = function() {// ended, play, pause, stop, click
+			
+		}
+		
+		self.removeEventListener = function() {
+			
+		}
+		
+		self.on = self.addEventListener;
+		
+		self.one = function() {
+			
 		}
 		
 		__construct();
